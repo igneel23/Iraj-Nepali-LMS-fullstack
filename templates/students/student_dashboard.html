@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="flex min-h-screen bg-[#0a0a0a] text-gray-200">
+  <!-- Sidebar -->
+  {% include "includes/dashboard_nav.html" %}
+
+  <!-- Main Content -->
+  <main class="flex-1 lg:ml-64 p-6 sm:p-8 transition-all duration-300" x-data="{ tab: 'all' }">
+    <div class="max-w-7xl mx-auto">
+
+      <!-- Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-10">
+        <div>
+          <h1 class="text-3xl font-bold text-white mb-2">Student Dashboard</h1>
+          <p class="text-gray-400">Track your attendance, assignments, and enrolled courses</p>
+        </div>
+        <a href="#" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl text-white font-medium shadow-lg transition">
+          Enroll New Course
+        </a>
+      </div>
+
+      <!-- Stats Section -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
+        <!-- Enrolled Courses -->
+        <div class="bg-[#111111] border border-green-600/20 rounded-2xl p-5 text-center hover:bg-[#141414] transition">
+          <p class="text-3xl font-bold text-green-500 mb-1">{{ total_courses }}</p>
+          <p class="text-sm text-gray-400">Enrolled Courses</p>
+        </div>
+
+        <!-- Attendance -->
+        <div class="bg-[#111111] border border-green-600/20 rounded-2xl p-5 text-center hover:bg-[#141414] transition">
+          <p class="text-3xl font-bold text-green-500 mb-1">{{ attendance_percentage }}%</p>
+          <p class="text-sm text-gray-400">Attendance Rate</p>
+        </div>
+
+        <!-- Assignments -->
+        <div class="bg-[#111111] border border-green-600/20 rounded-2xl p-5 text-center hover:bg-[#141414] transition">
+          <p class="text-3xl font-bold text-green-500 mb-1">{{ completed_assignments }}/{{ total_assignments }}</p>
+          <p class="text-sm text-gray-400">Assignments Completed</p>
+        </div>
+
+        <!-- Certificates -->
+        <div class="bg-[#111111] border border-green-600/20 rounded-2xl p-5 text-center hover:bg-[#141414] transition">
+          <p class="text-3xl font-bold text-green-500 mb-1">{{ certificates.count }}</p>
+          <p class="text-sm text-gray-400">Certificates Earned</p>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <!-- <div class="flex flex-wrap items-center justify-between mb-8">
+        <div class="flex gap-6 text-sm font-medium">
+          <button @click="tab = 'all'" :class="tab === 'all' ? 'text-green-500 border-b-2 border-green-500 pb-1' : 'text-gray-400 hover:text-white'" class="transition">All Courses</button>
+          <button @click="tab = 'in_progress'" :class="tab === 'in_progress' ? 'text-green-500 border-b-2 border-green-500 pb-1' : 'text-gray-400 hover:text-white'" class="transition">In Progress</button>
+          <button @click="tab = 'completed'" :class="tab === 'completed' ? 'text-green-500 border-b-2 border-green-500 pb-1' : 'text-gray-400 hover:text-white'" class="transition">Completed</button>
+        </div>
+        <div class="relative">
+          <input type="text" placeholder="Search your courses..." class="bg-[#111111] text-gray-300 rounded-lg px-4 py-2 outline-none border border-gray-700 focus:border-green-500 transition w-64">
+        </div>
+      </div> -->
+
+      <!-- Courses Section -->
+<div class="space-y-6">
+  {% for enrollment in enrollments %}
+  {% with course=enrollment.course %}
+  <div 
+    class="bg-[#111111] border border-green-600/20 rounded-2xl p-5 flex flex-col md:flex-row gap-6 hover:bg-[#141414] transition"
+    x-show="tab === 'all'"
+    x-transition
+  >
+    <!-- Thumbnail -->
+    <div class="flex-shrink-0">
+      {% if course.thumbnail %}
+        <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="w-full md:w-56 h-36 object-cover rounded-xl">
+      {% else %}
+        <div class="w-full md:w-56 h-36 bg-gray-800 flex items-center justify-center rounded-xl text-gray-500 text-sm">No Image</div>
+      {% endif %}
+    </div>
+
+    <!-- Course Info -->
+    <div class="flex flex-col justify-between flex-1">
+      <div>
+        <!-- Course Title & Badge -->
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-xl font-semibold text-white">{{ course.title }}</h2>
+          {% if course.level %}
+            <span class="text-xs bg-green-600/20 text-green-400 px-3 py-1 rounded-full capitalize">{{ course.level }}</span>
+          {% else %}
+            <span class="text-xs bg-green-600/20 text-green-400 px-3 py-1 rounded-full">Beginner</span>
+          {% endif %}
+        </div>
+
+        
+
+        <!-- Description -->
+        {% if course.description %}
+          <p class="text-gray-400 text-sm line-clamp-2 mb-4">
+            {{ course.description|truncatechars:150 }}
+          </p>
+        {% else %}
+          <p class="text-gray-500 text-sm mb-4">No description available.</p>
+        {% endif %}
+
+        <!-- Mentor -->
+        {% if course.mentor %}
+          <p class="text-gray-400 text-sm mb-2">
+           Your Mentor: 
+            <span class="text-gray-300 font-medium">{{ course.mentor.get_short_name|default:course.mentor.username }}</span>
+          </p>
+        {% endif %}
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex flex-wrap items-center gap-3 mt-4">
+        <a href="{% url 'course_player' enrollment.course.id %}" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-white text-sm font-medium">
+          Go to Course
+        </a>
+        <a href="{% url 'course_detail' course.slug %}" class="bg-transparent border border-gray-700 hover:border-green-600 px-4 py-2 rounded-lg text-gray-300 text-sm font-medium">
+          View Details
+        </a>
+      </div>
+    </div>
+  </div>
+  {% endwith %}
+  {% empty %}
+  <p class="text-gray-400 text-center">You haven't enrolled in any courses yet.</p>
+  {% endfor %}
+</div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Alpine.js for tabs -->
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+{% endblock %}

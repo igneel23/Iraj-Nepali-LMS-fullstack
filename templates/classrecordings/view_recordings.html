@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}{{ course.title }} - Class Recordings{% endblock %}
+
+{% block content %}
+<div class="flex min-h-screen bg-gray-950 text-gray-200">
+  {% include "includes/dashboard_nav.html" %}
+
+  <main class="flex-1 ml-0 lg:ml-64 px-4 sm:px-6 lg:px-10 py-10 transition-all duration-300">
+    <div class="max-w-6xl mx-auto">
+      <h1 class="text-3xl font-bold mb-6">🎥 {{ course.title }} - Class Recordings</h1>
+
+      {% if recordings %}
+        <div class="space-y-6">
+          {% for recording in recordings %}
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 hover:border-indigo-500 transition">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h2 class="text-xl font-semibold text-white mb-2">{{ recording.title }}</h2>
+                  <p class="text-gray-400 text-sm mb-2">📅 {{ recording.recording_date|date:"F j, Y" }}</p>
+                  {% if recording.description %}
+                    <p class="text-gray-400 text-sm mb-3">{{ recording.description }}</p>
+                  {% endif %}
+                </div>
+                <a href="{{ recording.video_url }}" target="_blank"
+                   class="mt-4 sm:mt-0 inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-lg transition">
+                  ▶️ Watch Now
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center mt-20">
+          <h2 class="text-xl text-gray-400">No recordings uploaded yet. Please check back later.</h2>
+        </div>
+      {% endif %}
+    </div>
+  </main>
+</div>
+{% endblock %}

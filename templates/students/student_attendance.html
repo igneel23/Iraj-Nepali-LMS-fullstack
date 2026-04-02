@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}My Attendance{% endblock %}
+
+{% block content %}
+<div class="flex min-h-screen bg-[#0a0a0a] text-gray-200">
+  {% include "includes/dashboard_nav.html" %}
+
+  <main class="flex-1 ml-0 lg:ml-64 px-4 sm:px-6 lg:px-10 py-10 transition-all duration-300">
+    <div class="max-w-5xl mx-auto">
+      <h1 class="text-3xl font-bold text-green-40 mb-8">My Attendance</h1>
+
+      {% if attendance_data %}
+        {% for course_data in attendance_data %}
+          <div class="bg-[#0a0a0a] border border-gray-800 rounded-2xl shadow-lg mb-8">
+            <div class="p-6 border-b border-gray-800">
+              <h2 class="text-2xl font-semibold text-green-300 mb-2">{{ course_data.course.title }}</h2>
+              <p class="text-gray-400 text-sm">
+                <span class="font-medium">Total Sessions:</span> {{ course_data.total_sessions }} |
+                <span class="font-medium">Attended:</span> {{ course_data.attended_count }} |
+                <span class="text-green-400 font-semibold">{{ course_data.percentage }}%</span> Attendance
+              </p>
+            </div>
+
+            <div class="p-6">
+              {% if course_data.sessions %}
+                <div class="space-y-3">
+                  {% for session in course_data.sessions %}
+                    <div class="flex justify-between items-center bg-[#111111] px-4 py-3 rounded-lg hover:bg-gray-700 transition">
+                      <div>
+                        <h3 class="text-base font-semibold">{{ session.title }}</h3>
+                        <p class="text-gray-400 text-sm">{{ session.date|date:"M d, Y" }}</p>
+                      </div>
+                      {% if session.status == 'present' %}
+                        <span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-600 text-white">Present</span>
+                      {% else %}
+                        <span class="px-3 py-1 text-xs font-semibold rounded-full bg-red-600 text-white">Absent</span>
+                      {% endif %}
+                    </div>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <p class="text-gray-400 text-center py-6">No sessions recorded yet.</p>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="text-center mt-20">
+          <p class="text-gray-400">No attendance records found. 📋</p>
+        </div>
+      {% endif %}
+    </div>
+  </main>
+</div>
+{% endblock %}

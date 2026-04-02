@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block title %}My Assignments{% endblock %}
+
+{% block content %}
+<section class="min-h-screen bg-[#0a0a0a] text-white flex">
+
+  <!-- Sidebar -->
+  <div class="hidden md:block fixed w-64 h-full">
+    {% include "includes/dashboard_nav.html" %}
+  </div>
+
+  <!-- Main Content -->
+  <div class="flex-1 md:ml-64 p-6 sm:p-8 transition-all duration-300" x-data="{ tab: 'all' }">
+    <div class="max-w-6xl mx-auto">
+      <h1 class="text-3xl font-bold text-green-40 mb-10">My Assignments</h1>
+
+      <!-- Tabs -->
+      <div class="flex space-x-4 mb-6">
+        <a href="?tab=all"
+           class="px-4 py-2 rounded-xl font-semibold text-sm
+                  {% if active_tab == 'all' %}bg-green-500/20 text-green-400{% else %}text-gray-300 hover:bg-green-700/20 hover:text-green-400{% endif %}">
+          All Assignments
+        </a>
+        <a href="?tab=submitted"
+           class="px-4 py-2 rounded-xl font-semibold text-sm
+                  {% if active_tab == 'submitted' %}bg-green-500/20 text-green-400{% else %}text-gray-300 hover:bg-green-700/20 hover:text-green-400{% endif %}">
+          Submitted
+        </a>
+        <a href="?tab=missed"
+           class="px-4 py-2 rounded-xl font-semibold text-sm
+                  {% if active_tab == 'missed' %}bg-green-500/20 text-green-400{% else %}text-gray-300 hover:bg-green-700/20 hover:text-green-400{% endif %}">
+          Missed
+        </a>
+      </div>
+
+      <!-- Assignment Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+        {% for assignment in assignments %}
+          <div x-show="tab==='all' || (tab==='submitted' && assignment.submission) || (tab==='missed' && not assignment.submission)" 
+               class="relative bg-[#111111] rounded-2xl p-6 shadow-xl border border-gray-800/60 backdrop-blur-md transition-transform hover:scale-[1.02] duration-300 hover:shadow-green-600/40">
+
+            <!-- Header -->
+            <div class="mb-4">
+              <span class="text-sm text-gray-400 mb-1 block truncate">
+                {{ assignment.course.title }}
+              </span>
+              <h2 class="text-xl font-semibold text-white mb-2 truncate">
+                {{ assignment.title }}
+              </h2>
+              <span class="inline-block bg-red-600/90 text-white text-xs font-semibold px-3 py-1 rounded-full shadow">
+                Due: {{ assignment.due_date|date:"M d, Y h:i A" }}
+              </span>
+            </div>
+
+            <hr class="border-gray-700/60 my-4">
+
+            <!-- Description -->
+            <p class="text-gray-300 text-sm mb-5 leading-relaxed line-clamp-4">
+              {{ assignment.description|truncatewords:25 }}
+            </p>
+
+            <!-- Status & Submission Info -->
+            {% if assignment.submission %}
+              <div class="flex flex-col gap-2 mt-auto">
+                <div class="flex items-center justify-between">
+                  <span class="text-green-400 text-sm font-semibold flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Submitted
+                  </span>
+                  <span class="text-xs text-gray-400">
+                    {{ assignment.submission.submitted_at|date:"M d, Y h:i A" }}
+                  </span>
+                </div>
+
+                {% if assignment.submission.submission_link %}
+                  <a href="{{ assignment.submission.submission_link }}" target="_blank"
+                     class="text-blue-400 underline text-sm hover:text-blue-300 transition">
+                    🔗 View Submitted Link
+                  </a>
+                {% endif %}
+              </div>
+            {% else %}
+              <div class="mt-5 flex justify-between items-center">
+                {% if assignment.due_date < now %}
+                  <button class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold cursor-not-allowed shadow" disabled>
+                    Assignment Missed
+                  </button>
+                {% else %}
+                  <a href="{% url 'assignments:submit_assignment' assignment.id %}"
+                     class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 shadow hover:shadow-green-500/40">
+                    Submit →
+                  </a>
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Alpine.js for tabs -->
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+{% endblock %}

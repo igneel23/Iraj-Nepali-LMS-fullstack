@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% include 'includes/nav.html' %}
+
+
+<!-- Hero Section -->
+<section class="relative bg-black-900 py-24 px-6 md:px-12 text-white" 
+         style="background-image: url('{{ course.thumbnail.url }}'); background-size: cover; background-position: center;">
+  <div class="absolute inset-0 bg-black bg-opacity-90"></div> <!-- Overlay -->
+  <div class="relative max-w-7xl mx-auto flex flex-col md:flex-row gap-8 items-start">
+    <div class="flex-1 space-y-4">
+      <h1 class="text-4xl md:text-5xl font-extrabold">{{ course.title }}</h1>
+      <p class="text-gray-300 text-lg">{{ course.short_description }}</p>
+      <div class="flex flex-wrap gap-2 mt-2">
+        <span class="bg-green-900 text-white text-sm font-semibold px-3 py-1 rounded-full shadow">{{ course.get_level_display }}</span>
+        <span class="bg-green-900 text-white text-sm font-semibold px-3 py-1 rounded-full shadow">{{ course.get_language_display }}</span>
+        <span class="bg-green-900 text-white text-sm font-semibold px-3 py-1 rounded-full shadow">{{ course.total_hours }} hrs</span>
+      </div>
+      <div class="mt-6 flex gap-4">
+        {% if is_enrolled %}
+          <button class="px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg cursor-not-allowed" disabled>Enrolled</button>
+        {% else %}
+          <a href="{% url 'enroll_course' course.slug %}" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg shadow transition transform hover:scale-105">
+            Enroll Now
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Main Content -->
+<section class="max-w-7xl mx-auto px-6 md:px-12 mt-12 flex flex-col lg:flex-row gap-8">
+
+  <!-- Tabs and Content -->
+  <div class="flex-1">
+    <!-- Tabs Navigation -->
+    <div class="flex flex-wrap gap-2 md:gap-4 border-b border-gray-800 mb-6">
+      <button class="tab-btn py-2 px-4 font-semibold text-green-400 border-b-2 border-green-400 transition" data-tab="overview">Overview</button>
+      <button class="tab-btn py-2 px-4 font-semibold text-gray-400 hover:text-green-400 transition" data-tab="syllabus">Syllabus</button>
+      <button class="tab-btn py-2 px-4 font-semibold text-gray-400 hover:text-green-400 transition" data-tab="mentor">Mentor</button>
+      <button class="tab-btn py-2 px-4 font-semibold text-gray-400 hover:text-green-400 transition" data-tab="starting">Starting Date</button>
+    </div>
+
+    <!-- Tabs Content -->
+    <div>
+      <!-- Overview -->
+      <div class="tab-content active" id="overview">
+        <h2 class="text-2xl font-bold mb-4">Course Overview</h2>
+        <p class="text-gray-300 mb-4">{{ course.description|linebreaks }}</p>
+
+        <h3 class="text-xl font-semibold mb-2">Requirements</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-300 mb-4">
+          {% for req in course.requirements.all %}
+            <li>{{ req.text }}</li>
+          {% endfor %}
+        </ul>
+
+        <h3 class="text-xl font-semibold mb-2">Who This Course is For</h3>
+        <ul class="list-disc list-inside space-y-1 text-gray-300">
+          {% for audience in course.target_audience.all %}
+            <li>{{ audience.text }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Syllabus -->
+      <div class="tab-content hidden" id="syllabus">
+        <h2 class="text-2xl font-bold mb-4">Course Syllabus</h2>
+        {% if course.learning_points.all %}
+          <ul class="space-y-2 text-gray-300">
+            {% for point in course.learning_points.all %}
+              <li>📌 {{ point.text }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-gray-400">Syllabus details not added yet.</p>
+        {% endif %}
+      </div>
+
+      <!-- Mentor -->
+      <div class="tab-content hidden" id="mentor">
+        <h2 class="text-2xl font-bold mb-4">Your Mentor</h2>
+        <div class="flex flex-col md:flex-row items-center gap-6">
+          <div class="w-24 h-24">
+            <img src="https://i.pravatar.cc/100?img={{ course.mentor.id }}" alt="{{ course.mentor.username }}" class="rounded-full border-2 border-green-400 w-full h-full object-cover">
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold">{{ course.mentor.get_full_name|default:course.mentor.username }}</h3>
+            <p class="text-gray-400 text-sm">{{ course.mentor.bio|default:"Mentor profile, experience, and expertise description." }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Starting Date -->
+      <div class="tab-content hidden" id="starting">
+        <h2 class="text-2xl font-bold mb-4">Course Starting Date</h2>
+        <p class="text-gray-300 mb-2">Start Date: <span class="font-semibold">{{ course.start_date }}</span></p>
+        <p class="text-gray-300 mb-2">Live Days: <span class="font-semibold">{{ course.live_days }}</span></p>
+        <p class="text-gray-300 mb-2">Live Time: <span class="font-semibold">{{ course.live_time }}</span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sticky Course Card -->
+  <div class="lg:w-80 w-full sticky top-24 bg-black-900 border border-green-700 rounded-2xl p-6 space-y-4">
+    {% if course.thumbnail %}
+      <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="rounded-xl shadow-lg border border-green-600/20 w-full h-48 object-cover mb-4">
+    {% endif %}
+    <h3 class="text-xl font-bold text-white">{{ course.title }}</h3>
+    <p class="text-gray-300">{{ course.short_description }}</p>
+    <div class="flex items-center justify-between text-gray-400 text-sm">
+      <span>Level: {{ course.get_level_display }}</span>
+      <span>Language: {{ course.get_language_display }}</span>
+    </div>
+    <div class="flex items-center justify-between text-gray-400 text-sm">
+      <span>Total Hours: {{ course.total_hours }} hrs</span>
+      <span>Seats: {{ course.enrolled_students }}/{{ course.total_seats }}</span>
+    </div>
+    <div class="mt-4">
+      {% if course.is_discount_active %}
+        <p class="text-green-400 text-lg font-semibold">Rs {{ course.discounted_price|floatformat:0 }}</p>
+        <p class="text-gray-500 text-xs line-through">Rs {{ course.actual_price|floatformat:0 }}</p>
+      {% else %}
+        <p class="text-green-400 text-lg font-semibold">Rs {{ course.actual_price|floatformat:0 }}</p>
+      {% endif %}
+    </div>
+    <div class="mt-4">
+  {% if is_enrolled %}
+    <button class="block w-full bg-gray-600 text-white font-semibold py-3 rounded-lg text-center cursor-not-allowed" disabled>
+      Enrolled
+    </button>
+  {% else %}
+    <a href="{% url 'enroll_course' course.slug %}" class="block w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg text-center transition shadow">
+      Enroll Now
+    </a>
+  {% endif %}
+</div>
+  </div>
+
+</section>
+
+<!-- Tabs JS -->
+<script>
+  const tabs = document.querySelectorAll('.tab-btn');
+  const contents = document.querySelectorAll('.tab-content');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(btn => btn.classList.remove('text-green-400', 'border-b-2'));
+      tabs.forEach(btn => btn.classList.add('text-gray-400'));
+      contents.forEach(content => content.classList.add('hidden'));
+      tab.classList.add('text-green-400', 'border-b-2');
+      tab.classList.remove('text-gray-400');
+      document.getElementById(tab.dataset.tab).classList.remove('hidden');
+    });
+  });
+</script>
+
+{% include 'includes/footer.html' %}
+
+{% endblock %}

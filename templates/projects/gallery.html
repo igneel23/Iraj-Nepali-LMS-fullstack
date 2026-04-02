@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+{% include 'includes/nav.html' %}
+
+<!-- 💎 Modern Project Gallery -->
+<section class="relative bg-[#050505] text-gray-100 py-24 overflow-hidden">
+  <div class="container mx-auto px-6 md:px-12">
+
+    <!-- Heading -->
+    <div class="text-center mb-16">
+      <h2 class="text-4xl md:text-5xl font-extrabold mb-4 bg-gradient-to-r from-green-400 via-emerald-300 to-green-500 bg-clip-text text-transparent">
+        Our Student Projects
+      </h2>
+      <p class="text-gray-400 max-w-2xl mx-auto text-sm md:text-base">
+        Explore our best work — from sleek web apps to captivating brand identities, crafted with passion and precision.
+      </p>
+    </div>
+
+    <!-- Category Filter Tabs -->
+    <div class="flex justify-center flex-wrap gap-3 mb-14" id="project-filters">
+      <button class="filter-btn active bg-green-500/10 text-green-400 border border-green-500/30 px-5 py-2 rounded-full text-sm font-medium hover:bg-green-500/20 transition">
+        All
+      </button>
+      <button class="filter-btn bg-[#111] border border-gray-800 px-5 py-2 rounded-full text-sm font-medium hover:border-green-500 hover:text-green-400 transition" data-filter="web">
+        Web Design
+      </button>
+      <button class="filter-btn bg-[#111] border border-gray-800 px-5 py-2 rounded-full text-sm font-medium hover:border-green-500 hover:text-green-400 transition" data-filter="app">
+        App Design
+      </button>
+      <button class="filter-btn bg-[#111] border border-gray-800 px-5 py-2 rounded-full text-sm font-medium hover:border-green-500 hover:text-green-400 transition" data-filter="branding">
+        Branding
+      </button>
+    </div>
+
+    <!-- Project Cards -->
+    <div id="project-gallery" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-10 overflow-x-auto scrollbar-hide snap-x snap-mandatory md:overflow-visible">
+      {% for project in projects %}
+      <div class="project-card group relative bg-gradient-to-br from-[#0d0d0d] to-[#121212] border border-gray-800/60 rounded-3xl overflow-hidden shadow-[0_0_30px_rgba(0,255,100,0.05)] hover:shadow-[0_0_40px_rgba(0,255,150,0.15)] transition-all duration-500 snap-start hover:-translate-y-2 hover:border-green-700/60" data-category="{{ project.category }}">
+        
+        <!-- Image -->
+        <div class="relative h-64 overflow-hidden">
+          <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110">
+          
+          <!-- Overlay -->
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+
+          <!-- Category Badge -->
+          <span class="absolute top-4 left-4 bg-green-600/90 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-lg backdrop-blur-sm">
+            {{ project.get_category_display }}
+          </span>
+        </div>
+
+        <!-- Details -->
+        <div class="p-6">
+          <h3 class="text-xl font-semibold text-white mb-2 group-hover:text-green-400 transition-colors duration-300">
+            {{ project.title }}
+          </h3>
+          <p class="text-gray-400 text-sm line-clamp-3 leading-relaxed">
+            {{ project.description }}
+          </p>
+        </div>
+
+        <!-- Hover CTA -->
+        <!-- <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-500">
+          <a href="#" class="bg-green-500 hover:bg-green-600 text-black font-semibold px-5 py-2 rounded-full text-sm shadow-md transition">
+            View Project →
+          </a>
+        </div> -->
+      </div>
+      {% empty %}
+      <p class="col-span-full text-center text-gray-500 mt-10">No projects available yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ⚡ Filter Script -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const buttons = document.querySelectorAll(".filter-btn");
+    const cards = document.querySelectorAll(".project-card");
+
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        buttons.forEach((b) => b.classList.remove("active", "bg-green-500/10", "text-green-400"));
+        btn.classList.add("active", "bg-green-500/10", "text-green-400");
+
+        const filter = btn.dataset.filter;
+        cards.forEach((card) => {
+          card.classList.toggle("hidden", filter !== "all" && card.dataset.category !== filter);
+        });
+      });
+    });
+  });
+</script>
+
+<!-- 🧩 Hide Scrollbar for Mobile -->
+<style>
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+
+{% endblock %}

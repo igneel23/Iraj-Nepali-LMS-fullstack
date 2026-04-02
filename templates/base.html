@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}SkillPathsala{% endblock %}</title>
+
+    <!-- Tailwind CSS with Typography Plugin -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            },
+          },
+        },
+        plugins: [tailwindTypography],
+      }
+    </script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+
+    <!-- Google Font: Plus Jakarta Sans (modern clean font) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Alpine.js -->
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/png" />
+
+    <style>
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #0a0a0a;
+        color: #d1d5db;
+        scroll-behavior: smooth;
+      }
+
+      ::selection {
+        background-color: #22c55e;
+        color: white;
+      }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+  </head>
+
+  <body class="flex flex-col min-h-screen">
+    <div class="flex-1">
+      {% block content %}{% endblock %}
+    </div>
+
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

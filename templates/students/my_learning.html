@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}My Learning{% endblock %}
+
+{% block content %}
+<div class="flex min-h-screen bg-[#0a0a0a] text-gray-200">
+
+  <!-- Sidebar -->
+  <div class="hidden md:block fixed w-64 h-full z-30">
+    {% include "includes/dashboard_nav.html" %}
+  </div>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 md:ml-64 px-4 sm:px-6 lg:px-10 py-10 transition-all duration-300">
+    <div class="max-w-7xl mx-auto">
+      <h1 class="text-3xl font-extrabold text-green-50 mb-2">My Courses</h1>
+      <p class="mb-10 text-gray-400">Your Enrolled Courses List</p>
+
+      {% if enrolled_courses %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          {% for enrollment in enrolled_courses %}
+            <div class="group relative bg-[#111111] rounded-2xl overflow-hidden shadow-lg border border-gray-800 hover:shadow-green-500/40 hover:border-green-600 transition-all duration-300 flex flex-col min-h-[350px]">
+              
+              <!-- Course Thumbnail -->
+              {% if enrollment.course.thumbnail %}
+              <div class="relative w-full h-48">
+                <img src="{{ enrollment.course.thumbnail.url }}" 
+                     alt="{{ enrollment.course.title }}"
+                     class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gray-900/30 transition duration-300"></div>
+              </div>
+              {% endif %}
+
+              <!-- Course Info -->
+              <div class="flex flex-col flex-grow p-6">
+                <h2 class="text-lg font-semibold text-gray-100 mb-2 line-clamp-2">{{ enrollment.course.title }}</h2>
+                <p class="text-gray-400 text-sm line-clamp-3 mb-4">{{ enrollment.course.description|truncatechars:120 }}</p>
+
+                <!-- Progress Bar
+                {% if enrollment.progress %}
+                <div class="mb-4">
+                  <div class="w-full bg-gray-800 rounded-full h-2">
+                    <div class="bg-green-500 h-2 rounded-full" style="width: {{ enrollment.progress }}%"></div>
+                  </div>
+                  <span class="text-xs text-gray-400 mt-1 block">{{ enrollment.progress }}% completed</span>
+                </div>
+                {% endif %} -->
+
+                <!-- Continue Button -->
+                <a href="{% url 'course_player' enrollment.course.id %}" 
+                   class="mt-auto inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-center font-semibold transition-all duration-200 shadow hover:shadow-green-500/50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2">
+                  Continue Learning
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center mt-20">
+          <h2 class="text-xl text-gray-400 mb-4">You’re not enrolled in any courses yet.</h2>
+          <a href="/" class="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-medium shadow hover:shadow-green-500/50 transition focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2">
+            Browse Courses
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </main>
+
+</div>
+{% endblock %}

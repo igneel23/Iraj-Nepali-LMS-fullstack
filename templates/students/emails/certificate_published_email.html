@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Certificate Published</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color:#0a0a0a; color:#ffffff; padding:20px;">
+  <div style="max-width:600px; margin:auto; background-color:#111111; padding:30px; border-radius:10px;">
+    <h2 style="color:#4ade80;">Congratulations, {{ student.get_full_name|default:student.username }}!</h2>
+    
+    <p>Your certificate for the course 
+   <strong>{{ certificate.certificate.course.title }}</strong> has been issued.</p>
+
+    
+
+    <p>You can also log in to your account to view all your certificates:</p>
+    <p style="text-align:center; margin:20px 0;">
+      <a href="{{ login_url }}" style="background-color:#22c55e; color:#111111; text-decoration:none; padding:10px 20px; border-radius:6px; font-weight:bold; display:inline-block;">
+        Login to LMS
+      </a>
+    </p>
+
+    <hr style="border-color:#333333; margin:20px 0;">
+    <p style="color:#6b7280; font-size:12px; text-align:center;">
+      &copy; {{ now|date:"Y" }} Your LMS Platform. All rights reserved.
+    </p>
+  </div>
+</body>
+</html>

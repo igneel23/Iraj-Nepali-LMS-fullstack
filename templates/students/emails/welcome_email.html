@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to LMS</title>
+</head>
+<body style="margin:0; padding:0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color:#0a0a0a;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#0a0a0a; padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color:#111111; border-radius:16px; padding:40px; box-shadow: 0 8px 20px rgba(0,0,0,0.4); color:#ffffff;">
+          
+          <!-- Header -->
+          <tr>
+            <td style="text-align:center; padding-bottom:20px;">
+              <h1 style="color:#4ade80; font-size:28px; margin:0; font-weight:bold;">
+                Welcome, {{ student.get_full_name|default:student.username }}!
+              </h1>
+            </td>
+          </tr>
+          
+          <!-- Body -->
+          <tr>
+            <td style="padding:10px 0;">
+              <p style="color:#d1d5db; font-size:16px; line-height:1.6; margin:0;">
+                Your student account has been created successfully. You can now log in and start learning immediately.
+              </p>
+            </td>
+          </tr>
+
+          {% if password %}
+          <tr>
+            <td style="padding:10px 0;">
+              <p style="color:#d1d5db; font-size:16px; line-height:1.6; margin:0;">
+                <strong>Temporary password:</strong> {{ password }}
+              </p>
+              <p style="color:#d1d5db; font-size:16px; line-height:1.6; margin:0;">
+                Use your <strong>email address</strong> as your username to log in.
+              </p>
+            </td>
+          </tr>
+          {% endif %}
+
+          <!-- Call to Action -->
+          <tr>
+            <td style="text-align:center; padding:30px 0;">
+              <a href="{{ login_url }}" style="background-color:#4ade80; color:#111111; font-weight:bold; text-decoration:none; padding:15px 30px; border-radius:12px; display:inline-block; font-size:16px; transition:all 0.3s;">
+                Login to Your Account
+              </a>
+            </td>
+          </tr>
+
+          <!-- Security Note -->
+          <tr>
+            <td style="padding:10px 0;">
+              <p style="color:#9ca3af; font-size:14px; line-height:1.5; text-align:center; margin:0;">
+                For your security, please change your password after logging in.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding-top:30px;">
+              <hr style="border-color:#333333; margin:20px 0;">
+              <p style="color:#6b7280; font-size:12px; text-align:center; margin:0;">
+                &copy; {{ now|date:"Y" }} Your LMS Platform. All rights reserved.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

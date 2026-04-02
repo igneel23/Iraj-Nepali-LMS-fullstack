@@ -1,0 +1,62 @@
+{% if courses %}
+  {% for course in courses %}
+  <div class="group relative bg-gray-900/50 backdrop-blur-md border border-gray-800 rounded-3xl p-6 flex flex-col justify-between hover:shadow-2xl hover:shadow-green-900/50 transition-all duration-500">
+
+    <!-- Course Title -->
+    <h3 class="text-lg md:text-xl font-bold mb-2 text-white line-clamp-2 group-hover:text-green-400 transition-all">
+      {{ course.title }}
+    </h3>
+
+    <!-- Short Description -->
+    <p class="text-gray-400 text-sm mb-4 line-clamp-3">
+      {{ course.short_description|default:"No description available." }}
+    </p>
+
+    <!-- Mentor, Level & Duration -->
+    <div class="flex flex-wrap justify-start items-center text-xs text-gray-400 gap-3 mb-4">
+      {% if course.mentor %}
+      <span class="bg-green-900/40 border border-green-800 text-green-300 px-2 py-0.5 rounded-full">
+        {{ course.mentor.get_short_name|default:course.mentor.username }}
+      </span>
+      {% endif %}
+      <span class="bg-gray-800 text-gray-300 px-2 py-0.5 rounded">{{ course.get_level_display }}</span>
+      {% if course.total_hours %}<span>⏱ {{ course.total_hours }}+ hrs</span>{% endif %}
+    </div>
+
+    <!-- Rating & Schedule -->
+    <div class="flex flex-wrap justify-between items-center mb-4 text-xs text-gray-400 gap-2">
+      {% if course.rating_avg %}
+        <span class="text-yellow-400 flex items-center gap-1">
+          ⭐ {{ course.rating_avg|floatformat:1 }} <span class="text-gray-500">({{ course.rating_count }})</span>
+        </span>
+      {% endif %}
+      {% if course.live_days %}<span>📅 {{ course.live_days }}</span>{% endif %}
+      {% if course.live_time %}<span>⏰ {{ course.live_time }}</span>{% endif %}
+      {% if course.get_language_display %}<span>🌐 {{ course.get_language_display }}</span>{% endif %}
+    </div>
+
+    <!-- Lifetime Access -->
+    <div class="bg-gray-900/30 border border-green-800 rounded-xl p-2 text-center text-xs text-green-300 mb-4">
+      <strong>Lifetime Access</strong><br>
+      <span class="text-gray-400">All recordings included</span>
+    </div>
+
+    <!-- Pricing & Enroll -->
+    <div class="flex justify-between items-center mt-auto flex-wrap gap-2">
+      <div>
+        {% if course.is_discount_active %}
+          <p class="text-green-400 text-lg font-semibold">Rs {{ course.discounted_price|floatformat:0 }}</p>
+          <p class="text-gray-500 text-xs line-through">Rs {{ course.actual_price|floatformat:0 }}</p>
+        {% else %}
+          <p class="text-green-400 text-lg font-semibold">Rs {{ course.actual_price|floatformat:0 }}</p>
+        {% endif %}
+      </div>
+      <a href="{% url 'course_detail' course.slug %}" class="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition duration-300 shadow-md">
+        Enroll
+      </a>
+    </div>
+  </div>
+  {% endfor %}
+{% else %}
+  <p class="text-gray-400 text-center mt-10 text-lg col-span-full">No courses available.</p>
+{% endif %}

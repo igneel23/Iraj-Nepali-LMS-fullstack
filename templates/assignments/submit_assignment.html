@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Submit Assignment{% endblock %}
+
+{% block content %}
+<section class="min-h-screen bg-[#0a0a0a] text-gray-200 flex">
+
+  <!-- Sidebar -->
+  <div class="hidden md:block fixed w-64 h-full">
+    {% include "includes/dashboard_nav.html" %}
+  </div>
+
+  <!-- Main Content -->
+  <div class="flex-1 md:ml-64 p-6 sm:p-8 transition-all duration-300">
+    <div class="max-w-2xl mx-auto bg-[#111111] rounded-2xl p-8 shadow-lg border border-gray-800">
+      <h1 class="text-2xl font-bold text-green-40 mb-4">Submit Assignment</h1>
+      <p class="text-gray-400 mb-6 font-semibold">{{ assignment.title }}</p>
+
+      {% if messages %}
+        <div class="mb-4">
+          {% for message in messages %}
+            <p class="text-sm {% if message.tags == 'error' %}text-red-500{% else %}text-green-400{% endif %}">
+              {{ message }}
+            </p>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <form method="POST" class="space-y-6">
+        {% csrf_token %}
+
+        <!-- Submission Link Input -->
+        <div class="relative">
+          <label for="submission_link" class="block text-sm font-medium text-gray-300 mb-2">
+            Paste your Google Drive / GitHub / other link
+          </label>
+          <input type="url" id="submission_link" name="submission_link"
+                 value="{{ submission.submission_link|default:'' }}"
+                 placeholder="https://example.com/my-assignment"
+                 required
+                 class="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500 transition">
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex justify-between items-center">
+          <a href="{% url 'assignments:student_assignments' %}"
+             class="text-gray-400 hover:text-white transition">← Back to Assignments</a>
+
+          <button type="submit"
+                  class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg font-medium transition transform hover:-translate-y-1 hover:shadow-lg">
+            Submit Assignment
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- JS for toggling URL visibility -->
+<script>
+  const toggleBtn = document.getElementById('toggle-link');
+  const submissionInput = document.getElementById('submission_link');
+
+  toggleBtn.addEventListener('click', () => {
+    if (submissionInput.type === 'url') {
+      submissionInput.type = 'text';
+    } else {
+      submissionInput.type = 'url';
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Mentors | SkillPathsala{% endblock %}
+
+{% block content %}
+{% include 'includes/nav.html' %}
+<section class="py-20 px-6 md:px-12 bg-[#0a0a0a] text-gray-100">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h2 class="text-4xl md:text-5xl font-extrabold mb-3 tracking-tight">Meet Our Mentors</h2>
+      <p class="text-gray-400 text-lg">Learn from industry experts shaping the future of design and development</p>
+    </div>
+
+    <!-- Search Bar -->
+    <!-- <form method="GET" class="flex flex-col sm:flex-row justify-center gap-3 mb-14">
+      <input 
+        type="text" 
+        name="q" 
+        placeholder="Search mentors by name, company, or expertise..." 
+        value="{{ search_query }}" 
+        class="rounded-full px-5 py-3 w-full sm:w-1/2 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-green-500 outline-none transition"
+      >
+      <button 
+        type="submit" 
+        class="px-6 py-3 bg-green-600 text-white font-semibold rounded-full hover:bg-green-700 active:scale-95 transition"
+      >
+        Search
+      </button>
+    </form> -->
+
+    <!-- Mentors Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
+      {% for mentor in mentors %}
+        <div class="flex flex-col rounded-3xl overflow-hidden shadow-lg border border-gray-800 hover:-translate-y-2 hover:shadow-green-600/30 transition-all duration-300 group">
+
+          <!-- Top Image Section with full coverage -->
+          <div class="w-full h-64 bg-white flex items-center justify-center overflow-hidden">
+            {% if mentor.photo %}
+              <img src="{{ mentor.photo.url }}" 
+                   alt="{{ mentor.user.first_name }} {{ mentor.user.last_name }}" 
+                   class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500 ease-out">
+            {% else %}
+              <div class="flex items-center justify-center w-full h-full text-gray-400 text-6xl">
+                <i class="fa-solid fa-user"></i>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Bottom Info Section -->
+          <div class="p-6 bg-[#111111] border-t border-gray-800 rounded-b-3xl">
+            <h3 class="text-lg font-semibold text-white truncate">
+              {{ mentor.user.first_name }} {{ mentor.user.last_name }}
+            </h3>
+            
+
+            
+
+            {% if mentor.expertise %}
+              <p class="text-xs text-gray-300 mt-3 mb-3">
+                <span class="font-medium text-gray-200"></span> {{ mentor.expertise }}
+              </p>
+            {% endif %}
+            {% if mentor.experience %}
+              <p class="text-xs text-gray-400 mb-2">{{ mentor.experience }}+ years of experience</p>
+            {% endif %}
+            <p class="text-green-500 text-sm mt-1 mb-2">
+              {{ mentor.current_company|default:"Independent Mentor" }}
+            </p>
+
+            {% if mentor.website %}
+              <a href="{{ mentor.website }}" target="_blank" 
+                 class="inline-block text-xs text-green-500 font-medium hover:underline hover:text-green-400 transition">
+                Visit Profile →
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      {% empty %}
+        <p class="col-span-full text-center text-gray-500">No mentors found matching your search.</p>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if mentors.has_other_pages %}
+      <div class="mt-14 flex justify-center items-center space-x-3">
+        {% if mentors.has_previous %}
+          <a href="?page={{ mentors.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" 
+             class="px-5 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition">
+            Previous
+          </a>
+        {% endif %}
+        <span class="px-5 py-2 bg-gray-800 rounded-full text-gray-300">
+          Page {{ mentors.number }} of {{ mentors.paginator.num_pages }}
+        </span>
+        {% if mentors.has_next %}
+          <a href="?page={{ mentors.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" 
+             class="px-5 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition">
+            Next
+          </a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% include 'includes/faq.html' %}
+
+{% include 'includes/footer.html' %}
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Blog Posts{% endblock %}
+
+{% block content %}
+
+<!-- Include Navbar -->
+{% include 'includes/nav.html' %}
+
+<!-- Hero Section -->
+<section class="relative bg-green-800">
+  <div class="container mx-auto px-4 py-0 flex flex-col lg:flex-row items-center lg:justify-between">
+    
+    <!-- Left Text Content -->
+    <div class="lg:w-1/2 mb-12 lg:mb-0">
+      <h1 class="text-5xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
+        Explore Our Blog
+      </h1>
+      <p class="text-gray-300 text-lg md:text-xl mb-8 max-w-lg">
+        Insights, tutorials, and tips from our expert authors. Stay informed, inspired, and ahead in your field.
+      </p>
+      <a href="#blog-list" class="inline-block px-8 py-3 bg-[#111111] text-white font-semibold rounded-lg hover:bg-green-600 transition">
+        Start Reading
+      </a>
+    </div>
+
+    <!-- Right Image (Female Model) -->
+    <div class="lg:w-1/2 flex justify-center lg:justify-end">
+      <img src="{% static 'images/female_model.png' %}" alt="Female Model" class="w-full max-w-md lg:max-w-lg rounded-xl  animate-fadeInRight">
+    </div>
+  </div>
+
+  <!-- Optional Decorative Overlay -->
+  <!-- <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent"></div> -->
+</section>
+
+<!-- Blog Cards Grid -->
+<div class="container mx-auto px-4 py-16" id="blog-list">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    {% for post in posts %}
+      <div class="bg-[#111111] text-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex flex-col">
+        {% if post.featured_image %}
+          <div class="relative group">
+            <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-105">
+            <span class="absolute top-3 left-3 bg-green-600 text-white text-xs font-semibold uppercase px-3 py-1 rounded-full shadow">
+              {% if post.category %}{{ post.category.name }}{% else %}Uncategorized{% endif %}
+            </span>
+          </div>
+        {% endif %}
+        <div class="p-5 flex-1 flex flex-col justify-between">
+          <div>
+            <div class="text-gray-400 text-xs mb-2 flex flex-wrap gap-2">
+              <span>By {{ post.author.get_full_name|default:post.author.username }}</span>
+              <span>• {{ post.read_time }} min read</span>
+              <span>• {{ post.published_at|date:"M d, Y" }}</span>
+            </div>
+            <h2 class="text-xl font-semibold mb-3 hover:text-green-500 transition-colors duration-200">
+              <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+            </h2>
+            <p class="text-gray-300 text-sm mb-4 line-clamp-4">{{ post.excerpt }}</p>
+          </div>
+          <div class="mt-auto">
+            <a href="{{ post.get_absolute_url }}" class="inline-block bg-green-600 text-white font-medium px-4 py-2 rounded hover:bg-green-700 transition">
+              Read More →
+            </a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-gray-400 col-span-full text-center">No blog posts available.</p>
+    {% endfor %}
+  </div>
+</div>
+
+
+{% include 'includes/faq.html' %}
+{% include 'includes/footer.html' %}
+
+{% endblock %}
+
+<style>
+  @keyframes fadeInRight {
+    0% { opacity: 0; transform: translateX(50px); }
+    100% { opacity: 1; transform: translateX(0); }
+  }
+  .animate-fadeInRight {
+    animation: fadeInRight 1s ease forwards;
+  }
+</style>

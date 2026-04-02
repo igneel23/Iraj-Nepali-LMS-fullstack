@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<section class="min-h-screen bg-[#0a0a0a] text-white flex">
+
+  <!-- Sidebar -->
+  <div class="hidden md:block w-64 fixed h-full">
+    {% include "includes/dashboard_nav.html" %}
+  </div>
+
+  <!-- Main Content -->
+  <div class="flex-1 md:ml-64 p-6 sm:p-10">
+    <h1 class="text-3xl md:text-4xl font-bold text-green-400 mb-8">My Profile</h1>
+
+    <!-- Profile Card -->
+    <div class="bg-[#111111] backdrop-blur-md rounded-2xl shadow-2xl mx-auto flex flex-col md:flex-row overflow-hidden transition-transform hover:scale-[1.02] duration-300">
+
+      <!-- Avatar Section -->
+      <div class="flex-shrink-0 bg-green-800 flex items-center justify-center p-8 md:p-12">
+        {% if profile.user.profile.avatar and profile.user.profile.avatar.url %}
+          <img src="{{ profile.user.profile.avatar.url }}" alt="{{ profile.user.get_full_name }}"
+               class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white object-cover">
+        {% else %}
+          <div class="w-32 h-32 md:w-40 md:h-40 rounded-full bg-white border-4 border-green-500 flex items-center justify-center text-4xl font-bold text-green-400">
+            {{ profile.user.get_full_name|slice:":1" }}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- User Info Section -->
+      <div class="flex-1 p-6 md:p-12 space-y-6">
+        <h2 class="text-3xl md:text-4xl font-extrabold text-green-40">{{ profile.user.get_full_name }}</h2>
+        <p class="text-gray-400">@{{ profile.user.username }}</p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
+          <div>
+            <h3 class="text-gray-400 text-sm font-semibold uppercase">Email</h3>
+            <p class="text-white text-lg truncate">{{ profile.user.email }}</p>
+          </div>
+          <div>
+            <h3 class="text-gray-400 text-sm font-semibold uppercase">Student ID</h3>
+            <p class="text-white text-lg">{{ profile.student_id }}</p>
+          </div>
+          <div>
+            <h3 class="text-gray-400 text-sm font-semibold uppercase">Date of Birth</h3>
+            <p class="text-white text-lg">{{ profile.date_of_birth|default:"N/A" }}</p>
+          </div>
+          <div>
+            <h3 class="text-gray-400 text-sm font-semibold uppercase">Phone Number</h3>
+            <p class="text-white text-lg">{{ profile.phone_number|default:"N/A" }}</p>
+          </div>
+          <div class="sm:col-span-2">
+            <h3 class="text-gray-400 text-sm font-semibold uppercase">Joined On</h3>
+            <p class="text-white text-lg">{{ profile.joined_on|date:"M d, Y" }}</p>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mt-8 flex flex-wrap gap-4">
+          <!-- Edit Profile Button -->
+          <a href="{% url 'edit_student_profile' %}"
+             class="inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transition-all duration-300 hover:shadow-green-500/40">
+            Edit Profile
+          </a>
+
+          <!-- Change Password Button -->
+          <a href="{% url 'change_password' %}"
+             class="inline-flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-200 font-semibold px-6 py-3 rounded-xl shadow-lg border border-gray-700 transition-all duration-300 hover:text-white">
+            Change Password
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
