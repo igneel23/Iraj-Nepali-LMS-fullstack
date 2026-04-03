@@ -1,0 +1,14 @@
+# Exclude large and unnecessary folders from the Lambda bundle
+staticfiles/
+static/
+media/
+venv/
+venv_build/
+.git/
+db.sqlite3
+__pycache__/
+*.pyc
+*.pyo
+.python-version
+pyproject.toml
+uv.lock
