@@ -1,10 +1,20 @@
 #!/bin/bash
 
-echo "Building project..."
-python3.12 -m pip install -r requirements.txt
+# Exit on any error
+set -e
 
+echo "--- BUILDING PROJECT ---"
+
+# Install dependencies
+echo "Installing pip dependencies..."
+python3 -m pip install -r requirements.txt
+
+# Run Management Commands
 echo "Collecting static files..."
-python3.12 manage.py collectstatic --noinput --clear
+python3 manage.py collectstatic --noinput --clear
 
 echo "Running migrations..."
-python3.12 manage.py migrate --noinput
+python3 manage.py migrate --noinput
+
+echo "--- BUILD COMPLETE ---"
+
