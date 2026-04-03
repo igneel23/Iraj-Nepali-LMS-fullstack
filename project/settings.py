@@ -195,6 +195,9 @@ STORAGES = {
     },
 }
 
+# Fix MissingFileError for bootstrap maps
+WHITENOISE_IGNORE_MISSING_FILES = True
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
